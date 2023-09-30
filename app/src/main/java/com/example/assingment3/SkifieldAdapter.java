@@ -1,6 +1,7 @@
 package com.example.assingment3;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -18,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class SkifieldAdapter extends RecyclerView.Adapter<SkifieldAdapter.SkifieldViewHolder> {
-    private List<Skifield> skifields;
+    private static List<Skifield> skifields;
 
     public SkifieldAdapter(List<Skifield> skifields) {
         this.skifields = skifields;
@@ -27,12 +28,23 @@ public class SkifieldAdapter extends RecyclerView.Adapter<SkifieldAdapter.Skifie
     public static class SkifieldViewHolder extends RecyclerView.ViewHolder {
 
         Button skifieldButton;
-        ImageView skifieldLogo;
 
         public SkifieldViewHolder(@NonNull View itemView) {
             super(itemView);
             skifieldButton = itemView.findViewById(R.id.skifieldButton);
-            skifieldLogo = itemView.findViewById(R.id.skifieldLogo);
+            skifieldButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position = getAdapterPosition();
+                    Skifield clickedSkifield = skifields.get(position);
+
+                    Intent intent = new Intent(view.getContext(), SkiAreaActivity.class);
+                    intent.putExtra("skiAreaName", clickedSkifield.getName());
+                    intent.putExtra("skiAreaLogo", clickedSkifield.getLogoId());
+
+                    view.getContext().startActivity(intent);
+                }
+            });
         }
 
         // resize skifield icon
@@ -55,7 +67,7 @@ public class SkifieldAdapter extends RecyclerView.Adapter<SkifieldAdapter.Skifie
             Context context = skifieldButton.getContext();
 
             // declare desired size for the icon
-            int desiredIconSizeInPixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, context.getResources().getDisplayMetrics());
+            int desiredIconSizeInPixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, context.getResources().getDisplayMetrics());
 
             // get the resized icon
             Drawable drawable = resizeIcon(context, skifield.getLogoId(), desiredIconSizeInPixels, desiredIconSizeInPixels);
