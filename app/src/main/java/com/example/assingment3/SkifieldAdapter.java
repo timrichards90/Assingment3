@@ -22,7 +22,7 @@ public class SkifieldAdapter extends RecyclerView.Adapter<SkifieldAdapter.Skifie
     private static List<Skifield> skifields;
 
     public SkifieldAdapter(List<Skifield> skifields) {
-        this.skifields = skifields;
+        SkifieldAdapter.skifields = skifields;
     }
 
     public static class SkifieldViewHolder extends RecyclerView.ViewHolder {
@@ -32,18 +32,16 @@ public class SkifieldAdapter extends RecyclerView.Adapter<SkifieldAdapter.Skifie
         public SkifieldViewHolder(@NonNull View itemView) {
             super(itemView);
             skifieldButton = itemView.findViewById(R.id.skifieldButton);
-            skifieldButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = getAdapterPosition();
-                    Skifield clickedSkifield = skifields.get(position);
+            skifieldButton.setOnClickListener(view -> {
+                int position = getAdapterPosition();
+                Skifield clickedSkifield = skifields.get(position);
 
-                    Intent intent = new Intent(view.getContext(), SkiAreaActivity.class);
-                    intent.putExtra("skiAreaName", clickedSkifield.getName());
-                    intent.putExtra("skiAreaLogo", clickedSkifield.getLogoId());
+                Intent intent = new Intent(view.getContext(), SkiAreaActivity.class);
+                intent.putExtra("skiAreaName", clickedSkifield.getName());
+                intent.putExtra("skiAreaLogo", clickedSkifield.getLogoId());
+                intent.putExtra("skiAreaUrl", clickedSkifield.getUrl());
 
-                    view.getContext().startActivity(intent);
-                }
+                view.getContext().startActivity(intent);
             });
         }
 
