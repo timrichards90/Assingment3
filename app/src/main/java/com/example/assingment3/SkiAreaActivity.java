@@ -53,6 +53,8 @@ public class SkiAreaActivity extends AppCompatActivity {
             List<Facility> facilities = new ArrayList<>();
             Document document;
 
+            String currentFacilityName = "";
+
             try {
                 document = Jsoup.connect(skiAreaUrl).get();
             } catch (IOException e) {
@@ -62,7 +64,7 @@ public class SkiAreaActivity extends AppCompatActivity {
             Elements sections = document.select("div.cell.small-12.medium-6.accordion-block__item");
 
             for (Element section : sections) {
-                String currentFacilityName = section.select("h5").text();
+                currentFacilityName = section.select("h5").text();
                 Log.d(TAG, "CURRENT FACILITY NAME: " + currentFacilityName);
 
                 Elements accordionItems = section.select(".accordion-item");
@@ -72,7 +74,10 @@ public class SkiAreaActivity extends AppCompatActivity {
                     String facilityStatus = item.select("div.state span").text();
                     boolean isOpen = "Open".equals(facilityStatus);
 
-                    facilities.add(new Facility(facilityName, isOpen));
+                    Facility facility = new Facility(facilityName, isOpen);
+                    facility.setCurrentFacilityName(currentFacilityName);
+                    facilities.add(facility);
+//                    facilities.add(new Facility(facilityName, isOpen));
                 }
             }
 
