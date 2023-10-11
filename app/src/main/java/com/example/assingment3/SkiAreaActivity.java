@@ -63,12 +63,11 @@ public class SkiAreaActivity extends AppCompatActivity {
             Elements sections = document.select("div.cell.small-12.medium-6.accordion-block__item");
 
             for (Element section : sections) {
-                currentFacilityName = section.select("h5").text(); // Get the facility name
+                currentFacilityName = section.select("h5").text();
                 Log.d(TAG, "CURRENT FACILITY NAME: " + currentFacilityName);
 
                 Elements accordionItems = section.select(".accordion-item");
                 for (Element item : accordionItems) {
-                    Log.d(TAG, "ACC-ITEM ELEMENT: " + item.toString());
 
                     String facilityName = item.select("h6").text();
                     Log.d(TAG, "FACILITY NAME: " + facilityName);

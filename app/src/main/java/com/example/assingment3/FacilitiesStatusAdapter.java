@@ -39,20 +39,62 @@ public class FacilitiesStatusAdapter extends RecyclerView.Adapter<FacilitiesStat
         }
 
         public void bind(FacilitiesStatus facilitiesStatus) {
-            liftName.setText(facilitiesStatus.getLiftName());
-            serviceName.setText(facilitiesStatus.getServiceName());
-            roadName.setText(facilitiesStatus.getRoadName());
-
+            resetViews();
             int statusIconRes = facilitiesStatus.isOpen() ? R.drawable.open_icon : R.drawable.closed_icon;
             String statusText = facilitiesStatus.isOpen() ? "OPEN" : "CLOSED";
 
-            liftStatusIcon.setImageResource(statusIconRes);
-            serviceStatusIcon.setImageResource(statusIconRes);
-            roadStatusIcon.setImageResource(statusIconRes);
+            if(facilitiesStatus.getLiftName() != null) {
+                liftName.setText(facilitiesStatus.getLiftName());
+                liftStatusIcon.setImageResource(statusIconRes);
+                liftStatus.setText(statusText);
 
-            liftStatus.setText(statusText);
-            serviceStatus.setText(statusText);
-            roadStatus.setText(statusText);
+                serviceName.setVisibility(View.GONE);
+                serviceStatusIcon.setVisibility(View.GONE);
+                serviceStatus.setVisibility(View.GONE);
+
+                roadName.setVisibility(View.GONE);
+                roadStatusIcon.setVisibility(View.GONE);
+                roadStatus.setVisibility(View.GONE);
+            } else if(facilitiesStatus.getServiceName() != null) {
+                serviceName.setText(facilitiesStatus.getServiceName());
+                serviceStatusIcon.setImageResource(statusIconRes);
+                serviceStatus.setText(statusText);
+
+                liftName.setVisibility(View.GONE);
+                liftStatusIcon.setVisibility(View.GONE);
+                liftStatus.setVisibility(View.GONE);
+
+                roadName.setVisibility(View.GONE);
+                roadStatusIcon.setVisibility(View.GONE);
+                roadStatus.setVisibility(View.GONE);
+            } else if(facilitiesStatus.getRoadName() != null) {
+                roadName.setText(facilitiesStatus.getRoadName());
+                roadStatusIcon.setImageResource(statusIconRes);
+                roadStatus.setText(statusText);
+
+                liftName.setVisibility(View.GONE);
+                liftStatusIcon.setVisibility(View.GONE);
+                liftStatus.setVisibility(View.GONE);
+
+                serviceName.setVisibility(View.GONE);
+                serviceStatusIcon.setVisibility(View.GONE);
+                serviceStatus.setVisibility(View.GONE);
+            }
+        }
+
+
+        public void resetViews() {
+            liftName.setVisibility(View.VISIBLE);
+            liftStatusIcon.setVisibility(View.VISIBLE);
+            liftStatus.setVisibility(View.VISIBLE);
+
+            serviceName.setVisibility(View.VISIBLE);
+            serviceStatusIcon.setVisibility(View.VISIBLE);
+            serviceStatus.setVisibility(View.VISIBLE);
+
+            roadName.setVisibility(View.VISIBLE);
+            roadStatusIcon.setVisibility(View.VISIBLE);
+            roadStatus.setVisibility(View.VISIBLE);
         }
     }
 
