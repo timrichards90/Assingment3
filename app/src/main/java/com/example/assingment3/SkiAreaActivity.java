@@ -42,67 +42,47 @@ public class SkiAreaActivity extends AppCompatActivity {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private class SkifieldDataScraper extends AsyncTask<Void, Void, List<FacilitiesStatus>> {
+    private class SkifieldDataScraper extends AsyncTask<Void, Void, List<Facility>> {
 
         String skiAreaName = getIntent().getStringExtra("skiAreaName");
         int skiAreaLogo = getIntent().getIntExtra("skiAreaLogo", -1);
         String skiAreaUrl = getIntent().getStringExtra("skiAreaUrl");
 
         @Override
-        protected List<FacilitiesStatus> doInBackground(Void... voids) {
-            List<FacilitiesStatus> facilitiesStatuses = new ArrayList<>();
+        protected List<Facility> doInBackground(Void... voids) {
+            List<Facility> facilities = new ArrayList<>();
+            Document document;
 
-            Document document = null;
             try {
                 document = Jsoup.connect(skiAreaUrl).get();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
 
-            String currentFacilityName = "";
             Elements sections = document.select("div.cell.small-12.medium-6.accordion-block__item");
 
             for (Element section : sections) {
-                currentFacilityName = section.select("h5").text();
+                String currentFacilityName = section.select("h5").text();
                 Log.d(TAG, "CURRENT FACILITY NAME: " + currentFacilityName);
 
                 Elements accordionItems = section.select(".accordion-item");
                 for (Element item : accordionItems) {
-
                     String facilityName = item.select("h6").text();
                     Log.d(TAG, "FACILITY NAME: " + facilityName);
-
                     String facilityStatus = item.select("div.state span").text();
                     boolean isOpen = "Open".equals(facilityStatus);
 
-                    String liftName = null, serviceName = null, roadName = null;
-
-                    switch (currentFacilityName) {
-                        case "Lifts :":
-                            liftName = facilityName;
-                            break;
-                        case "Services & Facilities :":
-                            serviceName = facilityName;
-                            break;
-                        case "Road :":
-                            roadName = facilityName;
-                            break;
-                    }
-
-                    FacilitiesStatus facilitiesStatus = new FacilitiesStatus(currentFacilityName, liftName, serviceName, roadName, isOpen);
-                    facilitiesStatuses.add(facilitiesStatus);
+                    facilities.add(new Facility(facilityName, isOpen));
                 }
             }
 
-            return facilitiesStatuses;
+            return facilities;
         }
 
-
-
         @Override
-        protected void onPostExecute(List<FacilitiesStatus> facilitiesStatuses) {
-            super.onPostExecute(facilitiesStatuses);
-            adapter.updateData(facilitiesStatuses);
+        protected void onPostExecute(List<Facility> facilities) {
+            super.onPostExecute(facilities);
+            adapter.updateData(facilities);
         }
     }
 }
