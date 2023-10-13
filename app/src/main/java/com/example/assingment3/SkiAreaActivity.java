@@ -32,9 +32,12 @@ public class SkiAreaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ski_area_activity);
 
+        String skiAreaName = getIntent().getStringExtra("skiAreaName");
+        int skiAreaLogo = getIntent().getIntExtra("skiAreaLogo", -1);
+
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new FacilitiesStatusAdapter(new ArrayList<>());
+        adapter = new FacilitiesStatusAdapter(new ArrayList<>(), skiAreaName, skiAreaLogo);
         recyclerView.setAdapter(adapter);
         SkifieldDataScraper skifieldDataScraper = new SkifieldDataScraper();
         skifieldDataScraper.execute();
@@ -44,8 +47,6 @@ public class SkiAreaActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     private class SkifieldDataScraper extends AsyncTask<Void, Void, List<Facility>> {
 
-        String skiAreaName = getIntent().getStringExtra("skiAreaName");
-        int skiAreaLogo = getIntent().getIntExtra("skiAreaLogo", -1);
         String skiAreaUrl = getIntent().getStringExtra("skiAreaUrl");
 
         @Override
@@ -77,7 +78,6 @@ public class SkiAreaActivity extends AppCompatActivity {
                     Facility facility = new Facility(facilityName, isOpen);
                     facility.setCurrentFacilityName(currentFacilityName);
                     facilities.add(facility);
-//                    facilities.add(new Facility(facilityName, isOpen));
                 }
             }
 

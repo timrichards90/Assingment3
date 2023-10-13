@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,9 +14,13 @@ import java.util.List;
 
 public class FacilitiesStatusAdapter extends RecyclerView.Adapter<FacilitiesStatusAdapter.FacilityViewHolder> {
     private List<Facility> facilities;
+    private String skiAreaName;
+    private int skiAreaLogo;
 
-    public FacilitiesStatusAdapter(List<Facility> facilities) {
+    public FacilitiesStatusAdapter(List<Facility> facilities, String skiAreaName, int skiAreaLogo) {
         this.facilities = facilities;
+        this.skiAreaName = skiAreaName;
+        this.skiAreaLogo = skiAreaLogo;
     }
 
     @NonNull
@@ -29,6 +34,14 @@ public class FacilitiesStatusAdapter extends RecyclerView.Adapter<FacilitiesStat
     public void onBindViewHolder(@NonNull FacilityViewHolder holder, int position) {
         Facility currentFacility = facilities.get(position);
         holder.bind(currentFacility);
+
+        if(skiAreaName != null && skiAreaLogo != -1 && position == 0) {  // Only show banner for the first item
+            holder.skiAreaNameTextView.setText(skiAreaName);
+            holder.skiAreaLogoImageView.setImageResource(skiAreaLogo);
+            holder.skiAreaBanner.setVisibility(View.VISIBLE);
+        } else {
+            holder.skiAreaBanner.setVisibility(View.GONE);
+        }
 
         if(position == 0 || !currentFacility.getCurrentFacilityName().equals(facilities.get(position-1).getCurrentFacilityName())) {
             holder.currentFacilityNameTextView.setText(currentFacility.getCurrentFacilityName());
@@ -55,6 +68,9 @@ public class FacilitiesStatusAdapter extends RecyclerView.Adapter<FacilitiesStat
         TextView nameTextView;
         ImageView statusImageView;
         TextView statusTextView;
+        LinearLayout skiAreaBanner;
+        TextView skiAreaNameTextView;
+        ImageView skiAreaLogoImageView;
 
         public FacilityViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -62,6 +78,9 @@ public class FacilitiesStatusAdapter extends RecyclerView.Adapter<FacilitiesStat
             nameTextView = itemView.findViewById(R.id.nameTextView);
             statusImageView = itemView.findViewById(R.id.statusImageView);
             statusTextView = itemView.findViewById(R.id.statusTextView);
+            skiAreaBanner = itemView.findViewById(R.id.skiAreaBanner);
+            skiAreaNameTextView = itemView.findViewById(R.id.skiAreaNameTextView);
+            skiAreaLogoImageView = itemView.findViewById(R.id.skiAreaLogoImageView);
         }
 
         public void bind(Facility facility) {
