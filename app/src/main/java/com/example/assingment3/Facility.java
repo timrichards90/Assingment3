@@ -3,7 +3,6 @@ package com.example.assingment3;
 public class Facility {
     private String name;
     private boolean isOpen;
-
     private String currentFacilityName;
 
     public Facility(String name, boolean isOpen) {
