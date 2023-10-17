@@ -6,6 +6,9 @@ import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -26,6 +29,8 @@ import java.util.Objects;
 public class SkiAreaActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     FacilitiesStatusAdapter adapter;
+    RelativeLayout splashOverlay;
+    ImageView splashLogo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,6 +39,12 @@ public class SkiAreaActivity extends AppCompatActivity {
 
         String skiAreaName = getIntent().getStringExtra("skiAreaName");
         int skiAreaLogo = getIntent().getIntExtra("skiAreaLogo", -1);
+
+        splashOverlay = findViewById(R.id.splashOverlay);
+        splashLogo = findViewById(R.id.splashLogo);
+        if (skiAreaLogo != -1) {
+            splashLogo.setImageResource(skiAreaLogo);
+        }
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -88,6 +99,7 @@ public class SkiAreaActivity extends AppCompatActivity {
         protected void onPostExecute(List<Facility> facilities) {
             super.onPostExecute(facilities);
             adapter.updateData(facilities);
+            splashOverlay.setVisibility(View.GONE);
         }
     }
 }
