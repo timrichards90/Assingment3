@@ -1,16 +1,17 @@
 package com.example.assingment3;
 
-import static android.content.ContentValues.TAG;
-
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,14 +32,19 @@ public class SkiAreaActivity extends AppCompatActivity {
     FacilitiesStatusAdapter adapter;
     RelativeLayout splashOverlay;
     ImageView splashLogo;
+    String skiResortStatus;
+    String skiAreaName;
+    int skiAreaLogo;
+    String weatherTemp;
+    String weatherCondition;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ski_area_activity);
 
-        String skiAreaName = getIntent().getStringExtra("skiAreaName");
-        int skiAreaLogo = getIntent().getIntExtra("skiAreaLogo", -1);
+        skiAreaName = getIntent().getStringExtra("skiAreaName");
+        skiAreaLogo = getIntent().getIntExtra("skiAreaLogo", -1);
 
         splashOverlay = findViewById(R.id.splashOverlay);
         splashLogo = findViewById(R.id.splashLogo);
@@ -48,7 +54,6 @@ public class SkiAreaActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new FacilitiesStatusAdapter(new ArrayList<>(), skiAreaName, skiAreaLogo);
         recyclerView.setAdapter(adapter);
         SkifieldDataScraper skifieldDataScraper = new SkifieldDataScraper();
         skifieldDataScraper.execute();
@@ -73,16 +78,26 @@ public class SkiAreaActivity extends AppCompatActivity {
                 throw new RuntimeException(e);
             }
 
+            Element weatherElement = document.select("div.small-12.medium-6.info.info--large-img h5.title").first();
+            if (weatherElement != null) {
+                weatherTemp = weatherElement.ownText().trim();
+                String weatherIconURL = weatherElement.select("img").attr("src");
+
+                if (!weatherIconURL.isEmpty()) {
+                    weatherCondition = weatherIconURL.substring(weatherIconURL.lastIndexOf('/') + 1, weatherIconURL.lastIndexOf('.'));
+                }
+            }
+
+            skiResortStatus = Objects.requireNonNull(document.select("div.closed-state h5.title").first()).text().trim();
+
             Elements sections = document.select("div.cell.small-12.medium-6.accordion-block__item");
 
             for (Element section : sections) {
                 currentFacilityName = section.select("h5").text();
-                Log.d(TAG, "CURRENT FACILITY NAME: " + currentFacilityName);
 
                 Elements accordionItems = section.select(".accordion-item");
                 for (Element item : accordionItems) {
                     String facilityName = item.select("h6").text();
-                    Log.d(TAG, "FACILITY NAME: " + facilityName);
                     String facilityStatus = item.select("div.state span").text();
                     boolean isOpen = "Open".equals(facilityStatus);
 
@@ -98,8 +113,10 @@ public class SkiAreaActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<Facility> facilities) {
             super.onPostExecute(facilities);
-            adapter.updateData(facilities);
+            adapter = new FacilitiesStatusAdapter(facilities, skiAreaName, skiAreaLogo, skiResortStatus, weatherTemp, weatherCondition);
+            recyclerView.setAdapter(adapter);
             splashOverlay.setVisibility(View.GONE);
         }
+
     }
 }
