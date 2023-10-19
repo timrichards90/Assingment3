@@ -52,4 +52,10 @@ public class MainActivity extends AppCompatActivity {
         skifieldsRecyclerView.setAdapter(skifieldAdapter);
         skifieldsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SkiAreaActivity.clearFacilitiesCache();
+    }
 }

@@ -1,17 +1,16 @@
 package com.example.assingment3;
 
+import static android.content.ContentValues.TAG;
+
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.util.Log;
+import android.util.LruCache;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -37,6 +36,9 @@ public class SkiAreaActivity extends AppCompatActivity {
     int skiAreaLogo;
     String weatherTemp;
     String weatherCondition;
+    String skiAreaUrl;
+    private static final int CACHE_SIZE = 50; // Adjust the size based on your needs.
+    private static LruCache<String, List<Facility>> facilitiesCache = new LruCache<>(CACHE_SIZE);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,6 +47,7 @@ public class SkiAreaActivity extends AppCompatActivity {
 
         skiAreaName = getIntent().getStringExtra("skiAreaName");
         skiAreaLogo = getIntent().getIntExtra("skiAreaLogo", -1);
+        skiAreaUrl = getIntent().getStringExtra("skiAreaUrl");
 
         splashOverlay = findViewById(R.id.splashOverlay);
         splashLogo = findViewById(R.id.splashLogo);
@@ -54,11 +57,19 @@ public class SkiAreaActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
-        SkifieldDataScraper skifieldDataScraper = new SkifieldDataScraper();
-        skifieldDataScraper.execute();
 
+        List<Facility> cachedFacilities = facilitiesCache.get(skiAreaUrl); // Retrieve from cache here
+
+        if (cachedFacilities != null) {
+            adapter = new FacilitiesStatusAdapter(cachedFacilities, skiAreaName, skiAreaLogo, skiResortStatus, weatherTemp, weatherCondition);
+            recyclerView.setAdapter(adapter);
+            splashOverlay.setVisibility(View.GONE);
+        } else {
+            SkifieldDataScraper skifieldDataScraper = new SkifieldDataScraper();
+            skifieldDataScraper.execute();
+        }
     }
+
 
     @SuppressLint("StaticFieldLeak")
     private class SkifieldDataScraper extends AsyncTask<Void, Void, List<Facility>> {
@@ -113,10 +124,16 @@ public class SkiAreaActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<Facility> facilities) {
             super.onPostExecute(facilities);
+            facilitiesCache.put(skiAreaUrl, facilities);
             adapter = new FacilitiesStatusAdapter(facilities, skiAreaName, skiAreaLogo, skiResortStatus, weatherTemp, weatherCondition);
             recyclerView.setAdapter(adapter);
             splashOverlay.setVisibility(View.GONE);
         }
-
     }
+    public static void clearFacilitiesCache() {
+        if (facilitiesCache != null) {
+            facilitiesCache.evictAll();
+        }
+    }
+
 }
