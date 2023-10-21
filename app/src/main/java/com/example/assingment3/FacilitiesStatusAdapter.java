@@ -23,14 +23,16 @@ public class FacilitiesStatusAdapter extends RecyclerView.Adapter<FacilitiesStat
     private String skiResortStatus;
     private String temperature;
     private String weatherCondition;
+    private String timeString;
 
-    public FacilitiesStatusAdapter(List<Facility> facilities, String skiAreaName, int skiAreaLogo, String skiResortStatus, String temperature, String weatherCondition) {
+    public FacilitiesStatusAdapter(List<Facility> facilities, String skiAreaName, int skiAreaLogo, String skiResortStatus, String temperature, String weatherCondition, String timeString) {
         this.facilities = facilities;
         this.skiAreaName = skiAreaName;
         this.skiAreaLogo = skiAreaLogo;
         this.skiResortStatus = skiResortStatus;
         this.temperature = temperature;
         this.weatherCondition = weatherCondition;
+        this.timeString = timeString;
     }
 
     @NonNull
@@ -43,7 +45,7 @@ public class FacilitiesStatusAdapter extends RecyclerView.Adapter<FacilitiesStat
     @Override
     public void onBindViewHolder(@NonNull FacilityViewHolder holder, int position) {
         Facility currentFacility = facilities.get(position);
-        holder.bind(currentFacility, skiResortStatus, position, temperature, weatherCondition);
+        holder.bind(currentFacility, skiResortStatus, position, temperature, weatherCondition, facilities, timeString);
 
         if(skiAreaName != null && skiAreaLogo != -1 && position == 0) {  // Only show banner for the first item
             holder.skiAreaNameTextView.setText(skiAreaName);
@@ -85,6 +87,7 @@ public class FacilitiesStatusAdapter extends RecyclerView.Adapter<FacilitiesStat
         ImageView weatherIconImageView;
         TextView weatherDescriptionTextView;
         TextView weatherTempTextView;
+        TextView lastUpdatedTextView;
 
         public FacilityViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -99,9 +102,10 @@ public class FacilitiesStatusAdapter extends RecyclerView.Adapter<FacilitiesStat
             weatherIconImageView = itemView.findViewById(R.id.weatherIconImageView);
             weatherDescriptionTextView = itemView.findViewById(R.id.weatherDescriptionTextView);
             weatherTempTextView = itemView.findViewById(R.id.weatherTempTextView);
+            lastUpdatedTextView = itemView.findViewById(R.id.lastUpdatedTextView);
         }
 
-        public void bind(Facility facility, String skiResortStatus, int position, String temperature, String weatherCondition) {
+        public void bind(Facility facility, String skiResortStatus, int position, String temperature, String weatherCondition, List<Facility> facilities, String timestamp) {
             nameTextView.setText(facility.getName());
             statusImageView.setImageResource(facility.isOpen() ? R.drawable.open_icon : R.drawable.closed_icon);
             statusTextView.setText(facility.isOpen() ? "OPEN" : "CLOSED");
@@ -109,7 +113,6 @@ public class FacilitiesStatusAdapter extends RecyclerView.Adapter<FacilitiesStat
             if (position == 0 && skiResortStatus != null && !skiResortStatus.isEmpty()) {
                 String text = "RESORT STATUS: " + skiResortStatus;
                 weatherTempTextView.setText(temperature);
-                // image resources must start with a letter so we add a to the original string here
                 String modifiedWeatherCondition = "a" + weatherCondition;
                 int resourceId = itemView.getContext().getResources().getIdentifier(modifiedWeatherCondition, "drawable", itemView.getContext().getPackageName());
                 weatherIconImageView.setImageResource(resourceId);
@@ -134,6 +137,13 @@ public class FacilitiesStatusAdapter extends RecyclerView.Adapter<FacilitiesStat
                 currentFacilityNameTextView.setVisibility(View.VISIBLE);
             } else {
                 currentFacilityNameTextView.setVisibility(View.GONE);
+            }
+
+            if (position == facilities.size() - 1) {
+                lastUpdatedTextView.setText(timestamp);
+                lastUpdatedTextView.setVisibility(View.VISIBLE);
+            } else {
+                lastUpdatedTextView.setVisibility(View.GONE);
             }
         }
     }

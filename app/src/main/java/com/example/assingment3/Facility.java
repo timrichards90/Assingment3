@@ -4,6 +4,7 @@ public class Facility {
     private String name;
     private boolean isOpen;
     private String currentFacilityName;
+    private String lastUpdated;
 
     public Facility(String name, boolean isOpen) {
         this.name = name;
@@ -26,4 +27,11 @@ public class Facility {
         return isOpen;
     }
 
+    public void setLastUpdated(String lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public String getLastUpdated() {
+        return lastUpdated;
+    }
 }
