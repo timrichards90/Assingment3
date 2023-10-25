@@ -16,6 +16,7 @@
 
         <ImageView
             android:id="@+id/skiAreaLogoImageView"
+            android:contentDescription="@string/ski_area_logo"
             android:layout_width="48dp"
             android:layout_height="48dp" />
 
@@ -53,7 +54,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="8dp"
-            android:contentDescription="Weather Icon"/>
+            android:contentDescription="@string/weather_icon"/>
 
         <TextView
             android:id="@+id/weatherDescriptionTextView"
@@ -94,6 +95,7 @@
 
         <ImageView
             android:id="@+id/statusImageView"
+            android:contentDescription="@string/closed_or_open_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_launcher_foreground"/>

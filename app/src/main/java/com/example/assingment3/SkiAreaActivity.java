@@ -1,21 +1,18 @@
 package com.example.assingment3;
 
-import static android.content.ContentValues.TAG;
-
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.LruCache;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -32,24 +29,31 @@ public class SkiAreaActivity extends AppCompatActivity {
     FacilitiesStatusAdapter adapter;
     RelativeLayout splashOverlay;
     ImageView splashLogo;
-    String skiResortStatus;
+    String skiAreaStatus;
     String skiAreaName;
     int skiAreaLogo;
     String weatherTemp;
     String weatherCondition;
     String skiAreaUrl;
-    private static final int CACHE_SIZE = 50; // Adjust the size based on your needs.
+    private static final int CACHE_SIZE = 50; //TODO: find the correct amount
     private static LruCache<String, CacheEntry> facilitiesCache = new LruCache<>(CACHE_SIZE);
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ski_area_activity);
 
-        skiAreaName = getIntent().getStringExtra("skiAreaName");
-        skiAreaLogo = getIntent().getIntExtra("skiAreaLogo", -1);
-        skiAreaUrl = getIntent().getStringExtra("skiAreaUrl");
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            SkiAreaDataScraper skiAreaDataScraper = new SkiAreaDataScraper();
+            skiAreaDataScraper.execute();
+        });
 
+        // get data passed from ski area adapter
+        retrieveDataFromIntent();
+
+        // set up splash screen that is displayed app is scraping website
         splashOverlay = findViewById(R.id.splashOverlay);
         splashLogo = findViewById(R.id.splashLogo);
         if (skiAreaLogo != -1) {
@@ -61,47 +65,33 @@ public class SkiAreaActivity extends AppCompatActivity {
 
         CacheEntry cachedEntry = facilitiesCache.get(skiAreaUrl);
 
+        // if cached data exists use it
         if (cachedEntry != null) {
             long timeDiff = System.currentTimeMillis() - cachedEntry.timestamp;
             String timeString = getTimeString(timeDiff);
-            skiResortStatus = cachedEntry.skiResortStatus;
+            skiAreaStatus = cachedEntry.skiResortStatus;
             weatherTemp = cachedEntry.weatherTemp;
             weatherCondition = cachedEntry.weatherCondition;
 
-            adapter = new FacilitiesStatusAdapter(cachedEntry.facilities, skiAreaName, skiAreaLogo, skiResortStatus, weatherTemp, weatherCondition, timeString);
+            adapter = new FacilitiesStatusAdapter(cachedEntry.facilities, skiAreaName, skiAreaLogo, skiAreaStatus, weatherTemp, weatherCondition, timeString);
             recyclerView.setAdapter(adapter);
             splashOverlay.setVisibility(View.GONE);
+        // else scrape the data
         } else {
-            SkifieldDataScraper skifieldDataScraper = new SkifieldDataScraper();
-            skifieldDataScraper.execute();
+            SkiAreaDataScraper skiAreaDataScraper = new SkiAreaDataScraper();
+            skiAreaDataScraper.execute();
         }
     }
-
-    private String getTimeString(long timeDiff) {
-        long diffInSeconds = timeDiff / 1000;
-        if (diffInSeconds < 60) {
-            return diffInSeconds + " seconds ago";
-        }
-        long diffInMinutes = diffInSeconds / 60;
-        if (diffInMinutes < 60) {
-            return diffInMinutes + " minutes ago";
-        }
-        long diffInHours = diffInMinutes / 60;
-        if (diffInHours < 24) {
-            return diffInHours + " hours ago";
-        }
-        long diffInDays = diffInHours / 24;
-        return diffInDays + " days ago";
-    }
+    // scrape ski area data from the web
     @SuppressLint("StaticFieldLeak")
-    private class SkifieldDataScraper extends AsyncTask<Void, Void, List<Facility>> {
+    private class SkiAreaDataScraper extends AsyncTask<Void, Void, List<Facility>> {
 
         @Override
         protected List<Facility> doInBackground(Void... voids) {
             List<Facility> facilities = new ArrayList<>();
             Document document;
 
-            String currentFacilityName = "";
+            String currentFacilityName;
 
             try {
                 document = Jsoup.connect(skiAreaUrl).get();
@@ -119,7 +109,7 @@ public class SkiAreaActivity extends AppCompatActivity {
                 }
             }
 
-            skiResortStatus = Objects.requireNonNull(document.select("div.closed-state h5.title").first()).text().trim();
+            skiAreaStatus = Objects.requireNonNull(document.select("div.closed-state h5.title").first()).text().trim();
 
             Elements sections = document.select("div.cell.small-12.medium-6.accordion-block__item");
 
@@ -146,16 +136,47 @@ public class SkiAreaActivity extends AppCompatActivity {
             super.onPostExecute(facilities);
 
             long currentTime = System.currentTimeMillis();
-            facilitiesCache.put(skiAreaUrl, new CacheEntry(facilities, currentTime, skiResortStatus, weatherTemp, weatherCondition));
-            adapter = new FacilitiesStatusAdapter(facilities, skiAreaName, skiAreaLogo, skiResortStatus, weatherTemp, weatherCondition, "Last Updated: Just Now");
+            facilitiesCache.put(skiAreaUrl, new CacheEntry(facilities, currentTime, skiAreaStatus, weatherTemp, weatherCondition));
+            adapter = new FacilitiesStatusAdapter(facilities, skiAreaName, skiAreaLogo, skiAreaStatus, weatherTemp, weatherCondition, "Last Updated: Just Now");
             recyclerView.setAdapter(adapter);
             splashOverlay.setVisibility(View.GONE);
+            swipeRefreshLayout.setRefreshing(false);
         }
 
     }
+
+    // format the time difference
+    private String getTimeString(long timeDiff) {
+        long diffInSeconds = timeDiff / 1000;
+        if (diffInSeconds < 60) {
+            return diffInSeconds + " seconds ago";
+        }
+        long diffInMinutes = diffInSeconds / 60;
+        if (diffInMinutes < 60) {
+            return diffInMinutes + " minutes ago";
+        }
+        long diffInHours = diffInMinutes / 60;
+        if (diffInHours < 24) {
+            return diffInHours + " hours ago";
+        }
+        long diffInDays = diffInHours / 24;
+        return diffInDays + " days ago";
+    }
+
+    // clear the cached data
     public static void clearFacilitiesCache() {
         if (facilitiesCache != null) {
             facilitiesCache.evictAll();
+        }
+    }
+
+    // get intent data passed from ski area adapter
+    private void retrieveDataFromIntent() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            skiAreaName = bundle.getString("skiAreaName");
+            skiAreaLogo = bundle.getInt("skiAreaLogo", -1);
+            skiAreaUrl = bundle.getString("skiAreaUrl");
         }
     }
 }

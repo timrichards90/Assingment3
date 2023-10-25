@@ -70,11 +70,6 @@ public class FacilitiesStatusAdapter extends RecyclerView.Adapter<FacilitiesStat
         return facilities.size();
     }
 
-    public void updateData(List<Facility> newFacilityList) {
-        this.facilities = newFacilityList;
-        notifyDataSetChanged();
-    }
-
     static class FacilityViewHolder extends RecyclerView.ViewHolder {
         TextView skiResortStatusTextView;
         TextView currentFacilityNameTextView;
@@ -106,7 +101,7 @@ public class FacilitiesStatusAdapter extends RecyclerView.Adapter<FacilitiesStat
         }
 
         public void bind(Facility facility, String skiResortStatus, int position, String temperature, String weatherCondition, List<Facility> facilities, String timestamp) {
-            nameTextView.setText(facility.getName());
+            nameTextView.setText(facility.getCategory());
             statusImageView.setImageResource(facility.isOpen() ? R.drawable.open_icon : R.drawable.closed_icon);
             statusTextView.setText(facility.isOpen() ? "OPEN" : "CLOSED");
 
@@ -114,6 +109,7 @@ public class FacilitiesStatusAdapter extends RecyclerView.Adapter<FacilitiesStat
                 String text = "RESORT STATUS: " + skiResortStatus;
                 weatherTempTextView.setText(temperature);
                 String modifiedWeatherCondition = "a" + weatherCondition;
+                // TODO: change get identifier
                 int resourceId = itemView.getContext().getResources().getIdentifier(modifiedWeatherCondition, "drawable", itemView.getContext().getPackageName());
                 weatherIconImageView.setImageResource(resourceId);
                 SpannableString spannableString = new SpannableString(text);

@@ -1,13 +1,15 @@
 package com.example.assingment3;
 
 public class Facility {
-    private String name;
+    // such as lift, services and facilities, or road
+    private String category;
+    // if the facility is open or not
     private boolean isOpen;
+    // such as the name of the lift, service or road
     private String currentFacilityName;
-    private String lastUpdated;
 
-    public Facility(String name, boolean isOpen) {
-        this.name = name;
+    public Facility(String category, boolean isOpen) {
+        this.category = category;
         this.isOpen = isOpen;
     }
 
@@ -19,19 +21,11 @@ public class Facility {
         return currentFacilityName;
     }
 
-    public String getName() {
-        return name;
+    public String getCategory() {
+        return category;
     }
 
     public boolean isOpen() {
         return isOpen;
-    }
-
-    public void setLastUpdated(String lastUpdated) {
-        this.lastUpdated = lastUpdated;
-    }
-
-    public String getLastUpdated() {
-        return lastUpdated;
     }
 }
