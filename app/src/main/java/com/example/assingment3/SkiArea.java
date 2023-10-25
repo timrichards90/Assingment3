@@ -1,11 +1,8 @@
 package com.example.assingment3;
 
 public class SkiArea {
-    // ski area name
     private String name;
-    // ski area logoid
     private int logoId;
-    // ski area url to scrape data from
     private String url;
 
     public SkiArea(String name, int logoId, String url) {
@@ -22,5 +19,7 @@ public class SkiArea {
         return logoId;
     }
 
-    public String getUrl() { return url; }
+    public String getUrl() {
+        return url;
+    }
 }

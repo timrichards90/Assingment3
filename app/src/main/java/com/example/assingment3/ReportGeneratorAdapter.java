@@ -47,6 +47,7 @@ public class ReportGeneratorAdapter extends RecyclerView.Adapter<ReportGenerator
         Facility currentFacility = facilities.get(position);
         holder.bind(currentFacility, skiResortStatus, position, temperature, weatherCondition, facilities, timeString);
 
+        // show banner for the ski area
         if(skiAreaName != null && skiAreaLogo != -1 && position == 0) {  // Only show banner for the first item
             holder.skiAreaNameTextView.setText(skiAreaName);
             holder.skiAreaLogoImageView.setImageResource(skiAreaLogo);
@@ -55,6 +56,7 @@ public class ReportGeneratorAdapter extends RecyclerView.Adapter<ReportGenerator
             holder.skiAreaBanner.setVisibility(View.GONE);
         }
 
+        // show or hide facility name so it doesn't get repeated
         if(position == 0 || !currentFacility.getCurrentFacilityName().equals(facilities.get(position-1).getCurrentFacilityName())) {
             holder.currentFacilityNameTextView.setText(currentFacility.getCurrentFacilityName());
             holder.currentFacilityNameTextView.setVisibility(View.VISIBLE);
@@ -105,29 +107,29 @@ public class ReportGeneratorAdapter extends RecyclerView.Adapter<ReportGenerator
             statusImageView.setImageResource(facility.isOpen() ? R.drawable.open_icon : R.drawable.closed_icon);
             statusTextView.setText(facility.isOpen() ? "OPEN" : "CLOSED");
 
+            // display resort status
             if (position == 0 && skiResortStatus != null && !skiResortStatus.isEmpty()) {
+                // color text based on its value green for open red for closed
                 String text = "RESORT STATUS: " + skiResortStatus;
-                weatherTempTextView.setText(temperature);
-                String modifiedWeatherCondition = "a" + weatherCondition;
-                // TODO: change get identifier
-                int resourceId = itemView.getContext().getResources().getIdentifier(modifiedWeatherCondition, "drawable", itemView.getContext().getPackageName());
-                weatherIconImageView.setImageResource(resourceId);
                 SpannableString spannableString = new SpannableString(text);
-
                 spannableString.setSpan(new ForegroundColorSpan(Color.BLACK), 0, "RESORT STATUS: ".length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
                 if ("OPEN".equalsIgnoreCase(skiResortStatus)) {
                     spannableString.setSpan(new ForegroundColorSpan(Color.GREEN), text.length() - "OPEN".length(), text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 } else if ("CLOSED".equalsIgnoreCase(skiResortStatus)) {
                     spannableString.setSpan(new ForegroundColorSpan(Color.RED), text.length() - "CLOSED".length(), text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
-
                 skiResortStatusTextView.setText(spannableString);
+
+                // display weather information
+                weatherTempTextView.setText(temperature);
+                String modifiedWeatherCondition = "a" + weatherCondition;
+                int resourceId = itemView.getContext().getResources().getIdentifier(modifiedWeatherCondition, "drawable", itemView.getContext().getPackageName());
+                weatherIconImageView.setImageResource(resourceId);
             } else {
                 skiResortStatusTextView.setVisibility(View.GONE);
             }
 
-
+            // display facility name
             if(facility.getCurrentFacilityName() != null && !facility.getCurrentFacilityName().isEmpty()) {
                 currentFacilityNameTextView.setText(facility.getCurrentFacilityName());
                 currentFacilityNameTextView.setVisibility(View.VISIBLE);
@@ -135,6 +137,7 @@ public class ReportGeneratorAdapter extends RecyclerView.Adapter<ReportGenerator
                 currentFacilityNameTextView.setVisibility(View.GONE);
             }
 
+            // display last updated time stamp
             if (position == facilities.size() - 1) {
                 lastUpdatedTextView.setText(timestamp);
                 lastUpdatedTextView.setVisibility(View.VISIBLE);

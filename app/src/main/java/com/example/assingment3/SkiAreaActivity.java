@@ -35,7 +35,7 @@ public class SkiAreaActivity extends AppCompatActivity {
     String weatherTemp;
     String weatherCondition;
     String skiAreaUrl;
-    private static final int CACHE_SIZE = 50; //TODO: find the correct amount
+    private static final int CACHE_SIZE = 20; // maximum number of cache entries
     private static LruCache<String, CacheEntry> facilitiesCache = new LruCache<>(CACHE_SIZE);
     private SwipeRefreshLayout swipeRefreshLayout;
 

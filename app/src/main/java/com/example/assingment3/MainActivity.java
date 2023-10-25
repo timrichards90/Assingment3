@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    //RecyclerView displays list of ski ares
     RecyclerView skiAreaRecyclerView;
 
     @Override
@@ -27,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         // set floating action button icon
         fab.setImageResource(R.drawable.baseline_help_24);
 
-        //floating action bar displays instructions in a toast message when clicked
+        // floating action bar displays instructions in a snackbar message when clicked
         fab.setOnClickListener(view -> {
             String snackbarText = "Tap on a ski area to view its report.";
             Snackbar.make(view, snackbarText, Snackbar.LENGTH_LONG)
@@ -48,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
         //add SkiArea list to the RecyclerView
         SkiAreaAdapter skiAreaAdapter = new SkiAreaAdapter(skiAreaList);
-        skiAreaRecyclerView.setAdapter(skiAreaAdapter);
         skiAreaRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        skiAreaRecyclerView.setAdapter(skiAreaAdapter);
     }
 
     @Override
