@@ -4,15 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="8dp">
 
     <LinearLayout
         android:id="@+id/skiAreaBanner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="#FFA07A"
-        android:layout_gravity="center_vertical">
+        android:background="#003366"
+        android:gravity="center">
 
         <ImageView
             android:id="@+id/skiAreaLogoImageView"
