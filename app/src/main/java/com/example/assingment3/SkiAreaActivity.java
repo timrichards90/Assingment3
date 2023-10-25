@@ -26,7 +26,7 @@ import java.util.Objects;
 
 public class SkiAreaActivity extends AppCompatActivity {
     RecyclerView recyclerView;
-    FacilitiesStatusAdapter adapter;
+    ReportGeneratorAdapter adapter;
     RelativeLayout splashOverlay;
     ImageView splashLogo;
     String skiAreaStatus;
@@ -53,7 +53,7 @@ public class SkiAreaActivity extends AppCompatActivity {
         // get data passed from ski area adapter
         retrieveDataFromIntent();
 
-        // set up splash screen that is displayed app is scraping website
+        // set up splash screen that is displayed while app is scraping website
         splashOverlay = findViewById(R.id.splashOverlay);
         splashLogo = findViewById(R.id.splashLogo);
         if (skiAreaLogo != -1) {
@@ -67,13 +67,14 @@ public class SkiAreaActivity extends AppCompatActivity {
 
         // if cached data exists use it
         if (cachedEntry != null) {
+            // for the time stamp displayed at bottom of report
             long timeDiff = System.currentTimeMillis() - cachedEntry.timestamp;
             String timeString = getTimeString(timeDiff);
             skiAreaStatus = cachedEntry.skiResortStatus;
             weatherTemp = cachedEntry.weatherTemp;
             weatherCondition = cachedEntry.weatherCondition;
 
-            adapter = new FacilitiesStatusAdapter(cachedEntry.facilities, skiAreaName, skiAreaLogo, skiAreaStatus, weatherTemp, weatherCondition, timeString);
+            adapter = new ReportGeneratorAdapter(cachedEntry.facilities, skiAreaName, skiAreaLogo, skiAreaStatus, weatherTemp, weatherCondition, timeString);
             recyclerView.setAdapter(adapter);
             splashOverlay.setVisibility(View.GONE);
         // else scrape the data
@@ -137,7 +138,7 @@ public class SkiAreaActivity extends AppCompatActivity {
 
             long currentTime = System.currentTimeMillis();
             facilitiesCache.put(skiAreaUrl, new CacheEntry(facilities, currentTime, skiAreaStatus, weatherTemp, weatherCondition));
-            adapter = new FacilitiesStatusAdapter(facilities, skiAreaName, skiAreaLogo, skiAreaStatus, weatherTemp, weatherCondition, "Last Updated: Just Now");
+            adapter = new ReportGeneratorAdapter(facilities, skiAreaName, skiAreaLogo, skiAreaStatus, weatherTemp, weatherCondition, "Last Updated: Just Now");
             recyclerView.setAdapter(adapter);
             splashOverlay.setVisibility(View.GONE);
             swipeRefreshLayout.setRefreshing(false);

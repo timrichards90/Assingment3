@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        skiAreaRecyclerView = findViewById(R.id.skifieldsRecyclerView);
+        skiAreaRecyclerView = findViewById(R.id.skiAreaRecyclerView);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         // set floating action button icon

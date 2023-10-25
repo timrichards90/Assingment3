@@ -49,7 +49,6 @@ public class SkiAreaAdapter extends RecyclerView.Adapter<SkiAreaAdapter.Skifield
                 intent.putExtras(bundle);
                 context.startActivity(intent);
 
-                context.startActivity(intent);
             });
         }
 

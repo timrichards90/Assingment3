@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class FacilitiesStatusAdapter extends RecyclerView.Adapter<FacilitiesStatusAdapter.FacilityViewHolder> {
+public class ReportGeneratorAdapter extends RecyclerView.Adapter<ReportGeneratorAdapter.FacilityViewHolder> {
     private List<Facility> facilities;
     private String skiAreaName;
     private int skiAreaLogo;
@@ -25,7 +25,7 @@ public class FacilitiesStatusAdapter extends RecyclerView.Adapter<FacilitiesStat
     private String weatherCondition;
     private String timeString;
 
-    public FacilitiesStatusAdapter(List<Facility> facilities, String skiAreaName, int skiAreaLogo, String skiResortStatus, String temperature, String weatherCondition, String timeString) {
+    public ReportGeneratorAdapter(List<Facility> facilities, String skiAreaName, int skiAreaLogo, String skiResortStatus, String temperature, String weatherCondition, String timeString) {
         this.facilities = facilities;
         this.skiAreaName = skiAreaName;
         this.skiAreaLogo = skiAreaLogo;
@@ -38,7 +38,7 @@ public class FacilitiesStatusAdapter extends RecyclerView.Adapter<FacilitiesStat
     @NonNull
     @Override
     public FacilityViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.facility_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.ski_report, parent, false);
         return new FacilityViewHolder(view);
     }
 
