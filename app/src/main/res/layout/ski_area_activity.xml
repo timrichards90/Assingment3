@@ -9,14 +9,12 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- RecyclerView for the banner -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/bannerRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"/>
 
-        <!-- RecyclerView for the facilities -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/facilitiesRecyclerView"
             android:layout_width="match_parent"

@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
-// TODO: overlay text on photo
-// TODO: When transitioning from the splash screen to the main activity, consider adding a smooth transition or animation to enhance the user experience.
 // display a splash screen when opening unopened app, it doesn't serve any purpose other than aesthetics
 @SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
