@@ -46,6 +46,7 @@ public class SkiAreaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ski_area_activity);
 
+        // swipe refresh to generate new ski report
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             SkiAreaDataScraper skiAreaDataScraper = new SkiAreaDataScraper();
@@ -72,7 +73,7 @@ public class SkiAreaActivity extends AppCompatActivity {
 
         // if cached data exists use it
         if (cachedEntry != null) {
-            // for the time stamp displayed at bottom of report
+            // for the time stamp displayed on report
             long timeDiff = System.currentTimeMillis() - cachedEntry.timestamp;
             String timeString = getTimeString(timeDiff);
             skiAreaStatus = cachedEntry.skiResortStatus;
@@ -158,7 +159,16 @@ public class SkiAreaActivity extends AppCompatActivity {
             splashOverlay.setVisibility(View.GONE);
             swipeRefreshLayout.setRefreshing(false);
         }
+    }
 
+    // get intent data passed from ski area adapter
+    private void retrieveDataFromIntent() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            skiAreaName = bundle.getString("skiAreaName");
+            skiAreaLogo = bundle.getInt("skiAreaLogo", -1);
+            skiAreaUrl = bundle.getString("skiAreaUrl");
+        }
     }
 
     // format the time difference
@@ -183,16 +193,6 @@ public class SkiAreaActivity extends AppCompatActivity {
     public static void clearFacilitiesCache() {
         if (facilitiesCache != null) {
             facilitiesCache.evictAll();
-        }
-    }
-
-    // get intent data passed from ski area adapter
-    private void retrieveDataFromIntent() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            skiAreaName = bundle.getString("skiAreaName");
-            skiAreaLogo = bundle.getInt("skiAreaLogo", -1);
-            skiAreaUrl = bundle.getString("skiAreaUrl");
         }
     }
 }

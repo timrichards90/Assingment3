@@ -21,6 +21,7 @@
         android:src="@drawable/baseline_help_24"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/app_instructions" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
-// display a splash screen when opening unopened app, it doesn't serve any purpose other than aesthetics
+// display a splash screen when opening unopened app
 @SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
 

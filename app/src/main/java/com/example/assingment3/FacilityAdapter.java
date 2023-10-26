@@ -1,6 +1,5 @@
 package com.example.assingment3;
 
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,7 @@ import java.util.List;
 
 public class FacilityAdapter extends RecyclerView.Adapter<FacilityAdapter.FacilityViewHolder> {
     private List<Facility> facilities;
-    private String lastDisplayedFacilityName = null;
+    private String lastDisplayedFacilityName;
 
     public FacilityAdapter(List<Facility> facilities) {
         this.facilities = facilities;
@@ -64,7 +63,7 @@ public class FacilityAdapter extends RecyclerView.Adapter<FacilityAdapter.Facili
 
         public void bind(Facility facility) {
             facilityNameTextView.setText(facility.getCategory());
-
+            // set icon and text displaying if facility is open or closed
             if (facility.isOpen()) {
                 facilityStatusIcon.setImageResource(R.drawable.open_icon);
                 facilityStatusTextView.setText("OPEN");

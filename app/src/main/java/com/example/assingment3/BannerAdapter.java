@@ -45,7 +45,7 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
     @Override
     public int getItemCount() {
         return 1;
-    }
+    } // can only have one banner
 
     static class BannerViewHolder extends RecyclerView.ViewHolder {
         TextView skiResortStatusTextView;

@@ -4,7 +4,7 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/skifieldButton"
+        android:id="@+id/skiAreaButton"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_margin="8dp"
