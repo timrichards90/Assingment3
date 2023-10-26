@@ -25,8 +25,10 @@ import java.util.List;
 import java.util.Objects;
 
 public class SkiAreaActivity extends AppCompatActivity {
-    RecyclerView recyclerView;
-    ReportGeneratorAdapter adapter;
+    RecyclerView bannerRecyclerView;
+    RecyclerView facilitiesRecyclerView;
+    BannerAdapter bannerAdapter;
+    FacilityAdapter facilityAdapter;
     RelativeLayout splashOverlay;
     ImageView splashLogo;
     String skiAreaStatus;
@@ -60,8 +62,11 @@ public class SkiAreaActivity extends AppCompatActivity {
             splashLogo.setImageResource(skiAreaLogo);
         }
 
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        bannerRecyclerView = findViewById(R.id.bannerRecyclerView);
+        bannerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        facilitiesRecyclerView = findViewById(R.id.facilitiesRecyclerView);
+        facilitiesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         CacheEntry cachedEntry = facilitiesCache.get(skiAreaUrl);
 
@@ -74,8 +79,12 @@ public class SkiAreaActivity extends AppCompatActivity {
             weatherTemp = cachedEntry.weatherTemp;
             weatherCondition = cachedEntry.weatherCondition;
 
-            adapter = new ReportGeneratorAdapter(cachedEntry.facilities, skiAreaName, skiAreaLogo, skiAreaStatus, weatherTemp, weatherCondition, timeString);
-            recyclerView.setAdapter(adapter);
+            bannerAdapter = new BannerAdapter(skiAreaName, skiAreaLogo, skiAreaStatus, weatherTemp, weatherCondition, timeString);
+            bannerRecyclerView.setAdapter(bannerAdapter);
+
+            facilityAdapter = new FacilityAdapter(cachedEntry.facilities);
+            facilitiesRecyclerView.setAdapter(facilityAdapter);
+
             splashOverlay.setVisibility(View.GONE);
         // else scrape the data
         } else {
@@ -138,8 +147,14 @@ public class SkiAreaActivity extends AppCompatActivity {
 
             long currentTime = System.currentTimeMillis();
             facilitiesCache.put(skiAreaUrl, new CacheEntry(facilities, currentTime, skiAreaStatus, weatherTemp, weatherCondition));
-            adapter = new ReportGeneratorAdapter(facilities, skiAreaName, skiAreaLogo, skiAreaStatus, weatherTemp, weatherCondition, "Last Updated: Just Now");
-            recyclerView.setAdapter(adapter);
+
+            String timeString = "Report Generated: Just Now";
+            bannerAdapter = new BannerAdapter(skiAreaName, skiAreaLogo, skiAreaStatus, weatherTemp, weatherCondition, timeString);
+            bannerRecyclerView.setAdapter(bannerAdapter);
+
+            facilityAdapter = new FacilityAdapter(facilities);
+            facilitiesRecyclerView.setAdapter(facilityAdapter);
+
             splashOverlay.setVisibility(View.GONE);
             swipeRefreshLayout.setRefreshing(false);
         }
@@ -150,18 +165,18 @@ public class SkiAreaActivity extends AppCompatActivity {
     private String getTimeString(long timeDiff) {
         long diffInSeconds = timeDiff / 1000;
         if (diffInSeconds < 60) {
-            return diffInSeconds + " seconds ago";
+            return "Report generated: " + diffInSeconds + " seconds ago";
         }
         long diffInMinutes = diffInSeconds / 60;
         if (diffInMinutes < 60) {
-            return diffInMinutes + " minutes ago";
+            return "Report generated: " + diffInMinutes + " minutes ago";
         }
         long diffInHours = diffInMinutes / 60;
         if (diffInHours < 24) {
-            return diffInHours + " hours ago";
+            return "Report generated: " + diffInHours + " hours ago";
         }
         long diffInDays = diffInHours / 24;
-        return diffInDays + " days ago";
+        return "Report generated: " + diffInDays + " days ago";
     }
 
     // clear the cached data

@@ -4,14 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
+        <!-- RecyclerView for the banner -->
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+            android:id="@+id/bannerRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"/>
+
+        <!-- RecyclerView for the facilities -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/facilitiesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:layout_marginTop="16dp"/>
 
         <RelativeLayout
@@ -34,8 +44,7 @@
                 android:contentDescription="@string/progress_bar"
                 android:layout_centerInParent="true"
                 android:layout_margin="16dp" />
-
         </RelativeLayout>
 
-    </FrameLayout>
+    </LinearLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
